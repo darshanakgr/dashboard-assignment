@@ -1,4 +1,5 @@
 let labels = ["Very Low", "Low", "Medium", "High", "Very High"]
+let usageChartColor = []
 
 $('#list-tab a').on('click', function (e) {
     e.preventDefault()
@@ -12,6 +13,32 @@ $("input[id^='slider_']").each(function () {
     $(`#${this.id}`).on('input', function (e) {
         $(`#${this.id.replace('slider', 'val')}`).html(labels[$(this).val() - 1]);
     });
+});
+
+$("#list-usage-list").click(function(){
+    $.get("http://127.0.0.1:5000/tiles", function (data) {
+        $.get("http://127.0.0.1:5000/api/frequencies", function (frequencies) {
+            let xValues = []
+            let yValues = []
+            let barColors = [];
+            
+            data.forEach(function (tile, index) {
+                xValues.push(tile.name)
+                yValues.push(frequencies[index])
+                barColors.push(usageChartColor[index])
+            })
+
+            drawUsageChart(xValues, yValues, barColors);
+        });
+    });
+});
+
+$("#list-tile-list").click(function(){
+    renderTiles()
+});
+
+$("#list-preferences-list").click(function(){
+    updateSliderValues()
 });
 
 $("#icon-size-slider").slider({
@@ -42,10 +69,37 @@ $("#text-size-value").html(`[${$("#text-size-slider").slider("values", 0)}, ${$(
 $("#icon-size-value").html(`[${$("#icon-size-slider").slider("values", 0)}, ${$("#icon-size-slider").slider("values", 1)}]`)
 
 $("#apply-btn").click(function (e) {
+    let preferences = []
     $("input[id^='slider_']").each(function () {
-        console.log(this.id, this.value);
+        // preferences[this.id.replace('slider_', '')] = $(this).val()
+        preferences.push($(this).val())    
+    });
+
+    $.ajax({
+        type: 'POST',
+        contentType: 'application/json',
+        url: "http://127.0.0.1:5000/api/preferences",
+        data: JSON.stringify(preferences),
+        dataType : 'json',
+        success : (response) => {
+            console.log(response)
+        },
+        error : (err) => {
+            console.log(err)
+        }
     });
 });
+
+function updateSliderValues(){
+    $.get("http://127.0.0.1:5000/api/preferences", function (data) {
+        $("input[id^='slider_']").each(function (index) {
+            console.log(index, this.id)
+            $(this).val(data[index]);
+            $(`#${this.id.replace('slider', 'val')}`).html(labels[data[index] - 1])
+            
+        });
+    });
+}
 
 
 function getRandomInt(min, max) {
@@ -54,17 +108,8 @@ function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min) + min);
 }
 
-$.get("http://127.0.0.1:5000/tiles", function (data) {
-    let xValues = []
-    let yValues = []
-    let barColors = [];
-    data.forEach(function (tile) {
-        xValues.push(tile.name)
-        yValues.push(getRandomInt(0, 1000))
-        barColors.push(`rgb(${getRandomInt(0, 255)},${getRandomInt(0, 255)},${getRandomInt(0, 255)})`)
-    })
-
-    new Chart("myChart", {
+function drawUsageChart(xValues, yValues, barColors) {
+    new Chart("usage-chart", {
         type: "bar",
         data: {
             labels: xValues,
@@ -77,11 +122,12 @@ $.get("http://127.0.0.1:5000/tiles", function (data) {
             legend: {display: false},
             title: {
                 display: true,
-                text: "Usage"
+                text: "No. of Clicks"
             }
         }
     });
-});
+}
+
 
 function renderTiles(){
     $.ajax({
@@ -150,6 +196,39 @@ function renderTiles(){
     });
 }
 
+$("#randomize-btn").click(function (e) {
+    $.ajax({
+        type: 'POST',
+        contentType: 'application/json',
+        url: "http://127.0.0.1:5000/api/frequencies",
+        dataType : 'json',
+        success : (frequencies) => {
+            $.get("http://127.0.0.1:5000/tiles", function (data) {
+                let xValues = []
+                let yValues = []
+                let barColors = [];
+                
+                data.forEach(function (tile, index) {
+                    xValues.push(tile.name)
+                    yValues.push(frequencies[index])
+                    barColors.push(usageChartColor[index])
+                })
+
+                drawUsageChart(xValues, yValues, barColors);
+            });
+        },
+        error : (err) => {
+            console.log(err)
+        }
+    });
+});
+
 $(document).ready(function(){
-    renderTiles()
+    if (top.location.pathname === '/customize'){
+        for (let i = 0; i < 20; i++) {  
+            usageChartColor.push(`rgb(${getRandomInt(0, 255)},${getRandomInt(0, 255)},${getRandomInt(0, 255)})`)
+        }
+    
+        updateSliderValues()
+    }
 });

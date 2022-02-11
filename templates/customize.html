@@ -7,9 +7,9 @@
         <div class="col-10">
             <h1>CUSTOMIZE THE LAYOUT</h1>
         </div>
-        <div class="col-2">
+        <!-- <div class="col-2">
             <button type="button" class="btn btn-success" style="width: 100%;" id="apply-btn">Apply</button>
-        </div>
+        </div> -->
     </div>
 
     <div class="row">
@@ -22,7 +22,16 @@
         </div>
         <div class="col-8">
         <div class="tab-content" id="nav-tabContent">
+
             <div class="tab-pane fade show active" id="list-preference" role="tabpanel" aria-labelledby="list-preference-list">
+                <div class="row mt-5 mb-5">
+                    <div class="col-10">
+                    </div>
+                    <div class="col-2">
+                        <button type="button" class="btn btn-success" style="width: 100%;" id="apply-btn">Apply</button>
+                    </div>
+                </div>
+                
                 {% for tile in tiles %}
                     <div class="preference-list">
                         <div class="row">
@@ -39,9 +48,17 @@
                     </div>
                 {% endfor %}
             </div>
+            
+            
             <div class="tab-pane fade" id="list-usage" role="tabpanel" aria-labelledby="list-usage-list">
-                <canvas id="myChart" style="width:100%;max-width:600px"></canvas>
+                <div class="container text-center">
+                    <button class="btn btn-danger m-3" style="width: 100%;" id="randomize-btn">Randomize Usage</button>
+                    <canvas id="usage-chart" style="width: 100%;"></canvas>
+                </div>
+                
             </div>
+
+
             <div class="tab-pane fade" id="list-tile" role="tabpanel" aria-labelledby="list-tile-list">
                 <div class="row">
                     <div class="col-4">

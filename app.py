@@ -1,17 +1,23 @@
 from crypt import methods
 from distutils.command.config import config
+from tkinter import N
 from flask import Flask, request, render_template, jsonify
 from configs import colors, tile
-from constraints_solver import TileCP
+from configs.tile import Config
+from constraints_solver import TileCP, reoder_tiles
 import sys
+import copy
+import numpy as np
 
 app = Flask(__name__)
 
-tile_config = tile.Config()
+cfg = Config(n_tiles=len(tile.tiles))
 
 @app.route('/')
 def home():
-    return render_template("index.html", tiles=tile.tiles, font_size=tile_config.get_text_size(), icon_size=tile_config.get_icon_size())
+    tiles_data = copy.deepcopy(tile.tiles)
+    tiles_data = reoder_tiles(tiles_data, cfg)
+    return render_template("index.html", tiles=tiles_data, font_size=cfg.get_text_size(), icon_size=cfg.get_icon_size())
 
 @app.route('/customize')
 def customize():
@@ -42,12 +48,40 @@ def customize_tiles():
 def save_font():
     if request.is_json:
         d = request.get_json()
-        print(f"Previous: {(tile_config.get_text_size(), tile_config.get_icon_size())}", file=sys.stderr)
-        tile_config.set_text_size(d['textSize'])
-        tile_config.set_icon_size(d['iconSize'])
-        print(f"Current: {(tile_config.get_text_size(), tile_config.get_icon_size())}", file=sys.stderr)
+        print(f"Previous: {(cfg.get_text_size(), cfg.get_icon_size())}", file=sys.stderr)
+        cfg.set_text_size(d['textSize'])
+        cfg.set_icon_size(d['iconSize'])
+        print(f"Current: {(cfg.get_text_size(), cfg.get_icon_size())}", file=sys.stderr)
         return "OK"
     return {}
+
+@app.route('/api/frequencies', methods=["GET"])
+def get_frequencies():
+    return jsonify(cfg.get_frequencies().tolist())
+
+@app.route('/api/preferences', methods=["GET"])
+def get_preferences():
+    return jsonify(cfg.get_preferences().tolist())
+
+@app.route('/api/frequencies', methods=["POST"])
+def randomize_frequencies():
+    cfg.randomize_frequencies()
+    return jsonify(cfg.get_frequencies().tolist())
+
+@app.route('/api/preferences', methods=["POST"])
+def set_preferences():
+    if request.is_json:
+        d = request.get_json()
+        preferences = np.asarray(d).astype(np.int)
+        cfg.set_preferences(preferences)
+        return "OK"
+    return "ERROR"
+
+@app.route('/api/tiles/', methods=["GET"])
+def get_reodered_tiles():
+    tiles_data = copy.deepcopy(tile.tiles)
+    tiles_data = reoder_tiles(tiles_data, cfg)
+    return jsonify(tiles_data)
 
 
 if __name__ == "__main__":

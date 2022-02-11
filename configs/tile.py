@@ -3,7 +3,7 @@ import numpy as np
 # create a list for each tile
 # each tile has a name, priority, icon
 tiles = [
-    {"id": "balance", "name": "Balance", "priority": 1, "icon": "bi bi-piggy-bank"},
+    {"id": "account", "name": "Account", "priority": 1, "icon": "bi bi-piggy-bank"},
     {"id": "analytics", "name": "Analytics", "priority": 2, "icon": "bi bi-pie-chart"},
     {"id": "time_deposits", "name": "Time Deposits", "priority": 3, "icon": "bi bi-stopwatch"},
     {"id": "bill_payments", "name": "Bill Payments", "priority": 4, "icon": "bi bi-clipboard2-fill"},
@@ -13,16 +13,22 @@ tiles = [
     {"id": "settings", "name": "Settings", "priority": 8, "icon": "bi bi-wrench"},
     {"id": "loan", "name": "Loan", "priority": 9, "icon": "bi bi-file-text"},
     {"id": "spending_limits", "name": "Spending Limits", "priority": 10, "icon": "bi bi-wallet"},
-    {"id": "token", "name": "Token", "priority": 11, "icon": "bi bi-file-text"},
-    {"id": "grio", "name": "GRIO", "priority": 12, "icon": "bi bi-file-text"},
+    # {"id": "token", "name": "Token", "priority": 11, "icon": "bi bi-file-text"},
+    # {"id": "grio", "name": "GRIO", "priority": 12, "icon": "bi bi-file-text"},
     {"id": "insurance", "name": "Insurance", "priority": 13, "icon": "bi bi-file-text"},
     {"id": "investment", "name": "Investment", "priority": 14, "icon": "bi bi-file-text"}
 ]
 
 class Config:
-    def __init__(self) -> None:
+    def __init__(self, n_tiles):
         self.__text_size = 20
         self.__icon_size = 40
+        self.__frequencies = []
+        self.__preferences = np.ones(n_tiles) * 3
+        self.__n_tiles = n_tiles
+        
+        self.randomize_frequencies()
+        self.randomize_preferences()
         
     def set_text_size(self, text_size):
         self.__text_size = text_size
@@ -35,8 +41,28 @@ class Config:
         
     def get_icon_size(self):
         return self.__icon_size
+    
+    def randomize_frequencies(self):
+        self.__frequencies = np.random.randint(0, 100, self.__n_tiles)
+        
+    def randomize_preferences(self):
+        self.__preferences = np.random.randint(0, 5, self.__n_tiles) + 1
+        
+    def set_preferences(self, preferences):
+        self.__preferences = preferences
 
+    def get_frequencies(self):
+        return self.__frequencies
+    
+    def get_frequency(self, i):
+        return self.__frequencies[i]
 
+    def get_preferences(self):
+        return self.__preferences    
+    
+    def get_preference(self, i):
+        return self.__preferences[i]
+    
 
 
 
