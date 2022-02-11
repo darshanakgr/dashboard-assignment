@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 from crypt import methods
 from distutils.command.config import config
 from tkinter import N
@@ -8,6 +9,10 @@ from constraints_solver import TileCP, reoder_tiles
 import sys
 import copy
 import numpy as np
+=======
+from flask import Flask, redirect, url_for, render_template
+
+>>>>>>> parent of a6bc159 (customize layout)
 
 app = Flask(__name__)
 
@@ -19,6 +24,7 @@ def home():
     tiles_data = reoder_tiles(tiles_data, cfg)
     return render_template("index.html", tiles=tiles_data, font_size=cfg.get_text_size(), icon_size=cfg.get_icon_size())
 
+<<<<<<< HEAD
 @app.route('/customize')
 def customize():
     return render_template(
@@ -82,6 +88,9 @@ def get_reodered_tiles():
     tiles_data = copy.deepcopy(tile.tiles)
     tiles_data = reoder_tiles(tiles_data, cfg)
     return jsonify(tiles_data)
+=======
+
+>>>>>>> parent of a6bc159 (customize layout)
 
 
 if __name__ == "__main__":
