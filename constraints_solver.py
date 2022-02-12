@@ -69,7 +69,6 @@ def reoder_tiles(tiles_data, cfg):
 
     for t, p in cs:
         if x[t, p].value() == 1:
-            print(f"Tile: {t}, Placeholder: {p}, Frequency: {frequencies[t]}, Preference: {preferences[t]}")
             solution[t] = p
             
     tiles_data.sort(key=lambda x: solution[x["id"]])

@@ -168,7 +168,6 @@ function renderTiles(){
             $('#tile-space').html(htmlLines)
             
             $(".tile-func").click(function(e){
-                console.log('Clicked', )
                 $(".tile-func").css('background-color', '#2980b9')
                 $(this).css('background-color', '#3498db')
 

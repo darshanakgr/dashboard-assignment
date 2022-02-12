@@ -16,7 +16,10 @@ cfg = Config(n_tiles=len(tile.tiles))
 @app.route('/')
 def home():
     tiles_data = copy.deepcopy(tile.tiles)
-    tiles_data = reoder_tiles(tiles_data, cfg)
+    if cfg.get_mode() == Config.ALPHABETICAL:
+        tiles_data.sort(key=lambda x: x["id"])
+    else:
+        tiles_data = reoder_tiles(tiles_data, cfg)
     return render_template("index.html", tiles=tiles_data, font_size=cfg.get_text_size(), icon_size=cfg.get_icon_size())
 
 @app.route('/customize')
@@ -77,11 +80,31 @@ def set_preferences():
         return "OK"
     return "ERROR"
 
-@app.route('/api/tiles/', methods=["GET"])
+@app.route('/api/tiles', methods=["GET"])
 def get_reodered_tiles():
     tiles_data = copy.deepcopy(tile.tiles)
     tiles_data = reoder_tiles(tiles_data, cfg)
     return jsonify(tiles_data)
+
+@app.route('/api/order', methods=["POST"])
+def set_mode():
+    print("Function is called", file=sys.stdout)
+    if request.is_json:
+        d = request.get_json()
+        mode = int(d["mode"])
+        cfg.set_mode(mode)
+        tiles_data = copy.deepcopy(tile.tiles)
+        if cfg.get_mode() == Config.ALPHABETICAL:
+            tiles_data.sort(key=lambda x: x["id"])
+        else:
+            tiles_data = reoder_tiles(tiles_data, cfg)
+        return jsonify(tiles_data)
+    return "ERROR"
+
+
+@app.route('/api/order', methods=["GET"])
+def get_mode():
+    return jsonify(cfg.get_mode())
 
 
 if __name__ == "__main__":

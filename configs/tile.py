@@ -20,12 +20,17 @@ tiles = [
 ]
 
 class Config:
+    ALPHABETICAL = 0
+    CUSTOM = 1
+
     def __init__(self, n_tiles):
         self.__text_size = 20
         self.__icon_size = 40
         self.__frequencies = []
         self.__preferences = np.ones(n_tiles) * 3
         self.__n_tiles = n_tiles
+        self.__mode = Config.ALPHABETICAL
+        
         
         self.randomize_frequencies()
         self.randomize_preferences()
@@ -62,8 +67,13 @@ class Config:
     
     def get_preference(self, i):
         return self.__preferences[i]
+
+    def set_mode(self, mode):
+        self.__mode = mode
     
 
+    def get_mode(self):
+        return self.__mode
 
 
 
