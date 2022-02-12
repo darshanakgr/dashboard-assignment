@@ -112,7 +112,7 @@ function drawUsageChart(xValues, yValues, barColors) {
     let template = '<canvas id="usage-chart" style="width: 100%;"></canvas>'
     
     $('#usage-chart').remove();
-    $('#usage-chart').html(template);
+    $('#chart-container').append(template);
   
     new Chart("usage-chart", {
         type: "bar",
