@@ -13,7 +13,7 @@ function setOrderBy(order){
     $.ajax({
         type: 'POST',
         contentType: 'application/json',
-        url: "http://127.0.0.1:5000/api/order",
+        url: "http://167.71.214.79:5000/api/order",
         data: JSON.stringify({mode: order}),
         dataType : 'json',
         success : (tiles) => {
@@ -64,7 +64,7 @@ $("#custom-btn").click(function (e) {
 
 $(document).ready(function(){
     if (top.location.pathname === '/'){
-        $.get("http://127.0.0.1:5000/api/order", function(data) {
+        $.get("http://167.71.214.79:5000/api/order", function(data) {
             setActiveOrder(data);
         });
     }   
