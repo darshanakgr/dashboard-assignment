@@ -9,4 +9,4 @@ COPY requirements.txt /var/www/requirements.txt
 RUN pip install -r /var/www/requirements.txt
 EXPOSE 80
 
-CMD ["python", "app.py"]
+CMD ["python", "run"]
