@@ -16,8 +16,8 @@ $("input[id^='slider_']").each(function () {
 });
 
 $("#list-usage-list").click(function(){
-    $.get("http://167.71.214.79:5000/tiles", function (data) {
-        $.get("http://167.71.214.79:5000/api/frequencies", function (frequencies) {
+    $.get("http://127.0.0.1:5000/tiles", function (data) {
+        $.get("http://127.0.0.1:5000/api/frequencies", function (frequencies) {
             let xValues = []
             let yValues = []
             let barColors = [];
@@ -78,7 +78,7 @@ $("#apply-btn").click(function (e) {
     $.ajax({
         type: 'POST',
         contentType: 'application/json',
-        url: "http://167.71.214.79:5000/api/preferences",
+        url: "http://127.0.0.1:5000/api/preferences",
         data: JSON.stringify(preferences),
         dataType : 'json',
         success : (response) => {
@@ -91,7 +91,7 @@ $("#apply-btn").click(function (e) {
 });
 
 function updateSliderValues(){
-    $.get("http://167.71.214.79:5000/api/preferences", function (data) {
+    $.get("http://127.0.0.1:5000/api/preferences", function (data) {
         $("input[id^='slider_']").each(function (index) {
             console.log(index, this.id)
             $(this).val(data[index]);
@@ -138,7 +138,7 @@ function renderTiles(){
     $.ajax({
         type: 'POST',
         contentType: 'application/json',
-        url: "http://167.71.214.79:5000/tiles",
+        url: "http://127.0.0.1:5000/tiles",
         dataType : 'json',
         data : JSON.stringify({
             textSizeMin: $("#text-size-slider").slider("values", 0),
@@ -179,7 +179,7 @@ function renderTiles(){
                 $.ajax({
                     type: 'POST',
                     contentType: 'application/json',
-                    url: "http://167.71.214.79:5000/tiles/save",
+                    url: "http://127.0.0.1:5000/tiles/save",
                     dataType : 'json',
                     data : JSON.stringify({
                         textSize: $(this).attr('data-font'),
@@ -204,10 +204,10 @@ $("#randomize-btn").click(function (e) {
     $.ajax({
         type: 'POST',
         contentType: 'application/json',
-        url: "http://167.71.214.79:5000/api/frequencies",
+        url: "http://127.0.0.1:5000/api/frequencies",
         dataType : 'json',
         success : (frequencies) => {
-            $.get("http://167.71.214.79:5000/tiles", function (data) {
+            $.get("http://127.0.0.1:5000/tiles", function (data) {
                 let xValues = []
                 let yValues = []
                 let barColors = [];
