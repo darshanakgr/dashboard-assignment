@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title%}Home{% endblock %}
+{% block content %}
+
+<div class="container pt-5">
+    <div class="d-flex flex-row-reverse mt-5 mb-5">
+        <div class="btn-group" role="group" aria-label="sort-by">
+            <button type="button" class="btn btn-secondary" id="alpha-btn">Alphabetical</button>
+            <button type="button" class="btn btn-secondary" id="custom-btn">Customized</button>
+        </div>
+    </div>
+    <div id="menu-space" data-text="{{ text_size }}" data-icon="{{ icon_size }}">
+        {% for i in range(3) %}
+            <div class="row">
+                {% for j in range(4) %}
+                    <div class="col tile m-1">
+                        <div class="row mt-lg-3">
+                            <div class="col text-center">
+                                <i class="{{ tiles[i * 4 + j].icon }}" style="font-size: {{ icon_size }}px;"></i>
+                            </div>
+                        </div>
+                        <div class="row mt-1">
+                            <div class="col text-center">
+                                <p style="font-size: {{ text_size }}px;">{{ tiles[i * 4 + j].name }}</p>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endfor %}
+    </div>
+    
+</div>
+
+<style>
+    .tile{
+        background-color: #2980b9;
+        height: 150px;
+        color: #ecf0f1;
+    }
+</style>
+
+
+
+{% endblock %}
