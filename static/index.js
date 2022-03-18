@@ -14,13 +14,8 @@ $(document).ready(function () {
         }
 
         function setActiveOrder(order) {
-            if (order == 0) {
-                $('#alpha-btn').addClass('active')
-                $('#custom-btn').removeClass('active')
-            } else {
-                $('#alpha-btn').removeClass('active')
-                $('#custom-btn').addClass('active')
-            }
+            $(".active[name='order-btn']").removeClass("active")
+            $(`button[name="order-btn"][value=${order}]`).addClass("active")
         }
 
         function setOrderBy(order) {
@@ -83,14 +78,6 @@ $(document).ready(function () {
 
         }
 
-        $("#alpha-btn").click(function (e) {
-            setOrderBy(0)
-        });
-
-        $("#custom-btn").click(function (e) {
-            setOrderBy(1)
-        });
-
         $(".tile-func").click(function (e) {
             $(".tile-func").css('background-color', '#2980b9')
             let toSelect = tilesList[cursor - 1].id
@@ -126,6 +113,20 @@ $(document).ready(function () {
                     $("#vote-no").prop("checked", true);
                 }
             }
+        });
+
+        $.get("http://127.0.0.1:5000/api/votes", function (data) {
+            let yValues = []
+            let xValues = ["Alphabetical", "Frequency Only", "Preference Only", "Both"]
+            let barColors = [];
+
+            data.forEach(function (value, index) {
+                yValues.push(value)
+                barColors.push("rgb(52, 152, 219)")
+            })
+
+            drawUsageChart(xValues, yValues, barColors, "votes-chart");
+
         });
 
         $("#vote-btn").click(function (e) {
@@ -201,6 +202,10 @@ $(document).ready(function () {
             error: (err) => {
                 console.log(err)
             }
+        });
+
+        $("button[name='order-btn']").click(function (e) {
+            setOrderBy($(this).val())
         });
     }
 });

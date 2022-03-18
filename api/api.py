@@ -1,17 +1,14 @@
-import functools
-
-from flask import Blueprint, flash, g, redirect, render_template, request, session, url_for, jsonify
-from werkzeug.security import check_password_hash, generate_password_hash
-
-from auth.auth import login_required
-from utils import user_utils
-from utils.config import Config
-from constraints_solver import TileCP, reorder_tiles
-from db import db_connection
-from auth import auth
-import sys
 import copy
-import random
+
+import click
+from flask import Blueprint, request, session, jsonify
+
+import utils.user as user_utils
+import utils.vote as vote_utils
+from auth.auth import login_required
+from utils.constraints_solver import reorder_tiles
+from utils.config import Config
+
 
 bp = Blueprint('api', __name__, url_prefix="/api")
 
@@ -50,7 +47,13 @@ def vote():
             user_utils.save_user(user)
             return "OK"
         return "ERROR"
+
     return jsonify(user.get_vote())
+
+@bp.route('/votes', methods=["GET"])
+@login_required
+def votes():
+    return jsonify(vote_utils.count_votes())
 
 
 @bp.route('/order', methods=["POST", "GET"])

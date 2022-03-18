@@ -5,8 +5,6 @@ import sys
 from utils.config import Config
 from db.user import User
 
-DATA_DIR = "data"
-
 
 def create_user(user_id):
     user = User(user_id)
@@ -37,20 +35,20 @@ def dict_to_user(user_dict):
 
 
 def user_exists(user_id):
-    return os.path.exists(os.path.join(DATA_DIR, f"{user_id}.json"))
+    return os.path.exists(os.path.join(Config.DATA_DIR, f"{user_id}.json"))
 
 
 def save_user(user):
-    if not os.path.exists(DATA_DIR):
-        os.mkdir(DATA_DIR)
+    if not os.path.exists(Config.DATA_DIR):
+        os.mkdir(Config.DATA_DIR)
 
-    with open(os.path.join(DATA_DIR, f"{user.get_user_id()}.json"), "w") as output_file:
+    with open(os.path.join(Config.DATA_DIR, f"{user.get_user_id()}.json"), "w") as output_file:
         json.dump(user_to_dict(user), output_file)
 
 
 def load_user(user_id):
     if user_exists(user_id):
-        with open(os.path.join(DATA_DIR, f"{user_id}.json")) as output_file:
+        with open(os.path.join(Config.DATA_DIR, f"{user_id}.json")) as output_file:
             user = json.load(output_file)
             return dict_to_user(user)
     else:

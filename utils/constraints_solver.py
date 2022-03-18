@@ -2,6 +2,9 @@ from constraint import *
 from itertools import product
 import pulp
 
+from utils.config import Config
+
+
 class TileCP(object):
     def __init__(self):
         self.text_size = [15, 20, 25, 30]
@@ -17,7 +20,7 @@ class TileCP(object):
 
     def add_constraint(self, min_v, max_v, constraint='text_size'):
         self.problem.addConstraint(lambda v: min_v <= v <= max_v, [constraint])
-        
+
 
 def normalize(d: dict):
     v = d.values()
@@ -28,7 +31,7 @@ def normalize(d: dict):
     return d
 
 
-def reorder_tiles(tiles_data, cfg):
+def reorder_tiles(tiles_data, user):
     tiles = []
     frequencies = {}
     preferences = {}
@@ -38,14 +41,22 @@ def reorder_tiles(tiles_data, cfg):
         id = tiles_data[i]["id"]
         tiles.append(id)
         placeholders.append(i)
-        frequencies[id] = cfg.get_frequency(i)
-        preferences[id] = cfg.get_preference(i)
+        frequencies[id] = user.get_frequency(i)
+        preferences[id] = user.get_preference(i)
 
     normalize(frequencies)
     normalize(preferences)
 
     cs = list(product(tiles, placeholders))
-    costs = {(t, p): (0.5 * frequencies[t] + 0.5 * preferences[t]) * p for t, p in cs}
+
+    if user.get_mode() == Config.FREQ_ONLY:
+        wf, wp = 1, 0
+    elif user.get_mode() == Config.PREF_ONLY:
+        wf, wp = 0, 1
+    else:
+        wf, wp = 0.5, 0.5
+
+    costs = {(t, p): (wf * frequencies[t] + wp * preferences[t]) * p for t, p in cs}
 
     prob = pulp.LpProblem('LinearMenu', pulp.LpMinimize)
 
@@ -70,7 +81,7 @@ def reorder_tiles(tiles_data, cfg):
     for t, p in cs:
         if x[t, p].value() == 1:
             solution[t] = p
-            
+
     tiles_data.sort(key=lambda x: solution[x["id"]])
-    
+
     return tiles_data

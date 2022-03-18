@@ -3,10 +3,10 @@ import sys
 
 from flask import Blueprint, render_template, session, jsonify
 
-import utils.user_utils as user_utils
+import utils.user as user_utils
 from auth.auth import login_required
 from utils.config import Config
-from constraints_solver import reorder_tiles
+from utils.constraints_solver import reorder_tiles
 
 bp = Blueprint('dashboard', __name__)
 

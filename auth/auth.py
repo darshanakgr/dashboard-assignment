@@ -4,7 +4,7 @@ from flask import Blueprint, flash, g, redirect, render_template, request, sessi
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from db.db_connection import get_db
-import utils.user_utils as user_utils
+import utils.user as user_utils
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 
