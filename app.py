@@ -1,16 +1,11 @@
-from flask import *
-from flask_session import Session
+from flask import Flask
 from flask_cors import CORS
-from configs import colors, tile
-from configs.tile import Config
-from constraints_solver import TileCP, reoder_tiles
-from db import db_connection
+
+from api import api
 from auth import auth
 from dashboard import dashboard
-from api import api
-import sys
-import copy
-import numpy as np
+from db import db_connection
+from flask_session import Session
 
 app = Flask(__name__)
 CORS(app, resources={r"/api/*": {"origins": "*"}})

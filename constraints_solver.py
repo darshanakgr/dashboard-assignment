@@ -28,7 +28,7 @@ def normalize(d: dict):
     return d
 
 
-def reoder_tiles(tiles_data, cfg):
+def reorder_tiles(tiles_data, cfg):
     tiles = []
     frequencies = {}
     preferences = {}

@@ -1,83 +1,16 @@
 $(document).ready(function () {
     if (top.location.pathname === '/') {
-        $.get("http://167.71.214.79:5000/api/order", function (data) {
-            setActiveOrder(data);
-        });
 
-        let appendTens = document.getElementById("tens")
-        let appendSeconds = document.getElementById("seconds")
-        let appendMinutes = document.getElementById("minutes")
-        let actionLabel = document.getElementById("action")
+        let usageChartColor = []
 
-        let intervalFn;
-        let startTime;
-        let tilesList;
-        let userRecordsList = [];
-        let cursor;
-
-        function updateTilesList() {
-            // Retrieve the list of tiles
-            $.get("http://167.71.214.79:5000/api/tiles", function (data) {
-                tilesList = data;
-                cursor = 0;
-            });
+        for (let i = 0; i < 20; i++) {
+            usageChartColor.push(`rgb(${getRandomInt(0, 255)},${getRandomInt(0, 255)},${getRandomInt(0, 255)})`)
         }
 
-        function resetTimer() {
-            clearInterval(intervalFn);
-            appendTens.innerHTML = "00";
-            appendSeconds.innerHTML = "00";
-            appendMinutes.innerHTML = "00";
-        }
-
-        function startTimer() {
-            startTime = new Date().getTime();
-            intervalFn = setInterval(updateTime, 100);
-        }
-
-        updateTilesList();
-
-        $("#start-next-btn").click(function (e) {
-            if (cursor === tilesList.length) {
-                $(this).prop('disabled', true);
-                $("#start-next-btn").html("Done!");
-            }
-
-            if (cursor < tilesList.length) {
-                if (cursor === 0) {
-                    $("#start-next-btn").html("Next");
-                }
-
-                resetTimer();
-                actionLabel.innerHTML = tilesList[cursor].name
-                cursor++;
-                startTimer()
-            }
-
-            if (cursor === tilesList.length) {
-                $("#start-next-btn").html("Save");
-            }
-        });
-
-        $("#restart-btn").click(function () {
-            updateTilesList();
-            resetTimer();
-            $("#start-next-btn").html("Start");
-            $("#action").html("[Select this action]");
-        });
-
-
-        function updateTime() {
-            let currentTime = new Date().getTime()
-            let diff = currentTime - startTime;
-
-            let minutes = Math.floor((diff / 60000)).toString().padStart(2, '0');
-            let seconds = Math.floor((diff / 1000) % 60).toString().padStart(2, '0');
-            let tens = Math.floor((diff % 1000) / 10).toString().padStart(2, '0');
-
-            appendMinutes.innerHTML = minutes;
-            appendSeconds.innerHTML = seconds;
-            appendTens.innerHTML = tens;
+        function getRandomInt(min, max) {
+            min = Math.ceil(min);
+            max = Math.floor(max);
+            return Math.floor(Math.random() * (max - min) + min);
         }
 
         function setActiveOrder(order) {
@@ -90,12 +23,11 @@ $(document).ready(function () {
             }
         }
 
-
         function setOrderBy(order) {
             $.ajax({
                 type: 'POST',
                 contentType: 'application/json',
-                url: "http://167.71.214.79:5000/api/order",
+                url: "http://127.0.0.1:5000/api/order",
                 data: JSON.stringify({mode: order}),
                 dataType: 'json',
                 success: (tiles) => {
@@ -132,6 +64,22 @@ $(document).ready(function () {
                     console.log(err);
                 }
             });
+        }
+
+        function setVote(vote_value) {
+            $.ajax({
+                type: 'POST',
+                contentType: 'application/json',
+                url: "http://127.0.0.1:5000/api/vote",
+                data: JSON.stringify({vote: vote_value}),
+                dataType: 'json',
+                success: (res) => {
+                    console.log(res);
+                },
+                error: (err) => {
+                    console.log(err);
+                }
+            });
 
         }
 
@@ -147,7 +95,7 @@ $(document).ready(function () {
             $(".tile-func").css('background-color', '#2980b9')
             let toSelect = tilesList[cursor - 1].id
             let selected = $(this).attr('data-id');
-            if(toSelect === selected) {
+            if (toSelect === selected) {
                 $(this).css('background-color', '#3498db')
                 clearInterval(intervalFn);
                 let currentTime = new Date().getTime();
@@ -161,6 +109,98 @@ $(document).ready(function () {
             }
 
 
-        })
+        });
+
+        $.get("http://127.0.0.1:5000/api/order", function (data) {
+            setActiveOrder(data);
+        });
+
+        $.get("http://127.0.0.1:5000/api/vote", function (data) {
+            if (data == null) {
+                $("#vote-yes").prop("checked", false);
+                $("#vote-no").prop("checked", false);
+            } else {
+                if (data) {
+                    $("#vote-yes").prop("checked", true);
+                } else {
+                    $("#vote-no").prop("checked", true);
+                }
+            }
+        });
+
+        $("#vote-btn").click(function (e) {
+            if (!$("#vote-yes").is(":checked") && !$("#vote-no").is(":checked")) {
+                alert("Please select your vote before submission!")
+            } else {
+                setVote($("input[type='radio'][name='vote']:checked").val() === "yes")
+            }
+        });
+
+        function drawUsageChart(xValues, yValues, barColors, chartId) {
+            new Chart(chartId, {
+                type: "bar",
+                data: {
+                    labels: xValues,
+                    datasets: [{
+                        backgroundColor: barColors,
+                        data: yValues
+                    }]
+                },
+                options: {
+                    legend: {display: false},
+                    title: {display: false}
+                }
+            });
+        }
+
+        $.ajax({
+            type: 'POST',
+            contentType: 'application/json',
+            url: "http://127.0.0.1:5000/api/frequencies",
+            dataType: 'json',
+            success: (frequencies) => {
+                $.get("http://127.0.0.1:5000/tiles", function (data) {
+                    let xValues = []
+                    let yValues = []
+                    let barColors = [];
+
+                    data.forEach(function (tile, index) {
+                        xValues.push(tile.name)
+                        yValues.push(frequencies[index])
+                        barColors.push(usageChartColor[index])
+                    })
+
+                    drawUsageChart(xValues, yValues, barColors, "usage-chart");
+                });
+            },
+            error: (err) => {
+                console.log(err)
+            }
+        });
+
+        $.ajax({
+            type: 'POST',
+            contentType: 'application/json',
+            url: "http://127.0.0.1:5000/api/preferences",
+            dataType: 'json',
+            success: (frequencies) => {
+                $.get("http://127.0.0.1:5000/tiles", function (data) {
+                    let xValues = []
+                    let yValues = []
+                    let barColors = [];
+
+                    data.forEach(function (tile, index) {
+                        xValues.push(tile.name)
+                        yValues.push(frequencies[index])
+                        barColors.push(usageChartColor[index])
+                    })
+
+                    drawUsageChart(xValues, yValues, barColors, "preference-chart");
+                });
+            },
+            error: (err) => {
+                console.log(err)
+            }
+        });
     }
 });

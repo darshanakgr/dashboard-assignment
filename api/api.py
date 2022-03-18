@@ -3,10 +3,10 @@ import functools
 from flask import Blueprint, flash, g, redirect, render_template, request, session, url_for, jsonify
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from db.db_connection import get_db
-from configs import colors, tile
-from configs.tile import Config, cfg
-from constraints_solver import TileCP, reoder_tiles
+from auth.auth import login_required
+from utils import user_utils
+from utils.config import Config
+from constraints_solver import TileCP, reorder_tiles
 from db import db_connection
 from auth import auth
 import sys
@@ -17,61 +17,57 @@ bp = Blueprint('api', __name__, url_prefix="/api")
 
 
 @bp.route('/preferences', methods=["GET", "POST"])
+@login_required
 def preferences():
+    user = user_utils.load_user(user_id=session.get("user_id"))
     if request.method == "POST":
-        cfg.randomize_frequencies()
+        user.generate_preferences()
+        user_utils.save_user(user)
 
-    return jsonify(cfg.get_frequencies().tolist())
-
-
-@bp.route("/tiles", methods=["GET"])
-def get_user_study_tiles():
-    tiles_arr = copy.deepcopy(tile.tiles)
-    tiles_arr = random.sample(tiles_arr, k=len(tiles_arr))
-    return jsonify(tiles_arr)
+    return jsonify(user.get_preferences())
 
 
-#
-# @app.route('/api/preferences', methods=["GET"])
-# def get_preferences():
-#     return jsonify(cfg.get_preferences().tolist())
-#
-# @app.route('/api/frequencies', methods=["POST"])
-# def randomize_frequencies():
-#     cfg.randomize_frequencies()
-#     return jsonify(cfg.get_frequencies().tolist())
-#
-# @app.route('/api/preferences', methods=["POST"])
-# def set_preferences():
-#     if request.is_json:
-#         d = request.get_json()
-#         preferences = np.asarray(d).astype(np.int)
-#         cfg.set_preferences(preferences)
-#         return "OK"
-#     return "ERROR"
-#
-#
-# @bp.route('/preferences', methods=["POST"])
-# def set_preferences():
-#     if request.is_json:
-#         d = request.get_json()
-#         preferences = np.asarray(d).astype(np.int)
-#         cfg.set_preferences(preferences)
-#         return "OK"
-#     return "ERROR"
+@bp.route('/frequencies', methods=["GET", "POST"])
+@login_required
+def frequencies():
+    user = user_utils.load_user(user_id=session.get("user_id"))
+    if request.method == "POST":
+        user.generate_frequencies()
+        user_utils.save_user(user)
+
+    return jsonify(user.get_frequencies())
+
+
+@bp.route('/vote', methods=["POST", "GET"])
+@login_required
+def vote():
+    user = user_utils.load_user(user_id=session.get("user_id"))
+    if request.method == 'POST':
+        if request.is_json:
+            d = request.get_json()
+            vote = int(d["vote"])
+            user.set_vote(vote)
+            user_utils.save_user(user)
+            return "OK"
+        return "ERROR"
+    return jsonify(user.get_vote())
+
 
 @bp.route('/order', methods=["POST", "GET"])
+@login_required
 def order():
+    user = user_utils.load_user(user_id=session.get("user_id"))
     if request.method == 'POST':
         if request.is_json:
             d = request.get_json()
             mode = int(d["mode"])
-            cfg.set_mode(mode)
-            tiles_data = copy.deepcopy(tile.tiles)
-            if cfg.get_mode() == Config.ALPHABETICAL:
+            user.set_mode(mode)
+            user_utils.save_user(user)
+            tiles_data = copy.deepcopy(Config.TILES)
+            if mode == Config.ALPHABETICAL:
                 tiles_data.sort(key=lambda x: x["id"])
             else:
-                tiles_data = reoder_tiles(tiles_data, cfg)
+                tiles_data = reorder_tiles(tiles_data, user)
             return jsonify(tiles_data)
         return "ERROR"
-    return jsonify(cfg.get_mode())
+    return jsonify(user.get_mode())

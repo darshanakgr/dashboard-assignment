@@ -108,13 +108,13 @@ function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min) + min);
 }
 
-function drawUsageChart(xValues, yValues, barColors) {
+function drawUsageChart(xValues, yValues, barColors, chartId) {
     let template = '<canvas id="usage-chart" style="width: 100%;"></canvas>'
     
     $('#usage-chart').remove();
     $('#chart-container').append(template);
   
-    new Chart("usage-chart", {
+    new Chart(chartId, {
         type: "bar",
         data: {
             labels: xValues,
@@ -218,7 +218,7 @@ $("#randomize-btn").click(function (e) {
                     barColors.push(usageChartColor[index])
                 })
 
-                drawUsageChart(xValues, yValues, barColors);
+                drawUsageChart(xValues, yValues, barColors, "usage-chart");
             });
         },
         error : (err) => {
