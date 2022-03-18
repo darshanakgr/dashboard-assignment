@@ -6,7 +6,7 @@ ADD . /app
 RUN apt update && apt install -y python3-tk
 
 COPY requirements.txt /var/www/requirements.txt
-RUN pip install -r /var/www/requirements.txt && mkdir data && flask init-db
+RUN pip install -r /var/www/requirements.txt && mkdir /app/data && flask init-db
 
 EXPOSE 80
 
