@@ -22,7 +22,7 @@ $(document).ready(function () {
             $.ajax({
                 type: 'POST',
                 contentType: 'application/json',
-                url: "http://127.0.0.1:5000/api/order",
+                url: "http://167.71.214.79:5000/api/order",
                 data: JSON.stringify({mode: order}),
                 dataType: 'json',
                 success: (tiles) => {
@@ -65,7 +65,7 @@ $(document).ready(function () {
             $.ajax({
                 type: 'POST',
                 contentType: 'application/json',
-                url: "http://127.0.0.1:5000/api/vote",
+                url: "http://167.71.214.79:5000/api/vote",
                 data: JSON.stringify({vote: vote_value}),
                 dataType: 'json',
                 success: (res) => {
@@ -98,11 +98,11 @@ $(document).ready(function () {
 
         });
 
-        $.get("http://127.0.0.1:5000/api/order", function (data) {
+        $.get("http://167.71.214.79:5000/api/order", function (data) {
             setActiveOrder(data);
         });
 
-        $.get("http://127.0.0.1:5000/api/vote", function (data) {
+        $.get("http://167.71.214.79:5000/api/vote", function (data) {
             if (data == null) {
                 $("#vote-yes").prop("checked", false);
                 $("#vote-no").prop("checked", false);
@@ -115,7 +115,7 @@ $(document).ready(function () {
             }
         });
 
-        $.get("http://127.0.0.1:5000/api/votes", function (data) {
+        $.get("http://167.71.214.79:5000/api/votes", function (data) {
             let yValues = []
             let xValues = ["Alphabetical", "Frequency Only", "Preference Only", "Both"]
             let barColors = [];
@@ -157,10 +157,10 @@ $(document).ready(function () {
         $.ajax({
             type: 'POST',
             contentType: 'application/json',
-            url: "http://127.0.0.1:5000/api/frequencies",
+            url: "http://167.71.214.79:5000/api/frequencies",
             dataType: 'json',
             success: (frequencies) => {
-                $.get("http://127.0.0.1:5000/tiles", function (data) {
+                $.get("http://167.71.214.79:5000/tiles", function (data) {
                     let xValues = []
                     let yValues = []
                     let barColors = [];
@@ -182,10 +182,10 @@ $(document).ready(function () {
         $.ajax({
             type: 'POST',
             contentType: 'application/json',
-            url: "http://127.0.0.1:5000/api/preferences",
+            url: "http://167.71.214.79:5000/api/preferences",
             dataType: 'json',
             success: (frequencies) => {
-                $.get("http://127.0.0.1:5000/tiles", function (data) {
+                $.get("http://167.71.214.79:5000/tiles", function (data) {
                     let xValues = []
                     let yValues = []
                     let barColors = [];
