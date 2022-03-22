@@ -1,5 +1,6 @@
 import functools
 
+import click
 from flask import Blueprint, flash, g, redirect, render_template, request, session, url_for
 from werkzeug.security import check_password_hash, generate_password_hash
 
@@ -54,11 +55,17 @@ def login():
             error = 'Incorrect username.'
         elif not check_password_hash(user['password'], password):
             error = 'Incorrect password.'
+        # elif user_utils.user_exists(user_id=user['id']) is None:
+        #     error = 'Database error'
 
         if error is None:
             session.clear()
             session['user_id'] = user['id']
-            user_utils.load_user(user_id=user['id'])
+
+            if not user_utils.user_exists(user_id=user['id']):
+                click.echo("Creating a new user...")
+                user_utils.create_user(user_id=user['id'])
+
             return redirect(url_for('index'))
 
         flash(error)

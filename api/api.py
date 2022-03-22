@@ -1,14 +1,11 @@
 import copy
 
-import click
 from flask import Blueprint, request, session, jsonify
 
 import utils.user as user_utils
-import utils.vote as vote_utils
 from auth.auth import login_required
-from utils.constraints_solver import reorder_tiles
 from utils.config import Config
-
+from utils.constraints_solver import reorder_tiles
 
 bp = Blueprint('api', __name__, url_prefix="/api")
 
@@ -50,10 +47,11 @@ def vote():
 
     return jsonify(user.get_vote())
 
+
 @bp.route('/votes', methods=["GET"])
 @login_required
 def votes():
-    return jsonify(vote_utils.count_votes())
+    return jsonify(user_utils.count_votes())
 
 
 @bp.route('/order', methods=["POST", "GET"])

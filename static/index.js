@@ -1,5 +1,6 @@
 $(document).ready(function () {
     if (top.location.pathname === '/') {
+        let origin = window.location.origin
 
         let usageChartColor = []
 
@@ -22,7 +23,7 @@ $(document).ready(function () {
             $.ajax({
                 type: 'POST',
                 contentType: 'application/json',
-                url: "http://167.71.214.79:5000/api/order",
+                url: `${origin}/api/order`,
                 data: JSON.stringify({mode: order}),
                 dataType: 'json',
                 success: (tiles) => {
@@ -65,7 +66,7 @@ $(document).ready(function () {
             $.ajax({
                 type: 'POST',
                 contentType: 'application/json',
-                url: "http://167.71.214.79:5000/api/vote",
+                url: `${origin}/api/vote`,
                 data: JSON.stringify({vote: vote_value}),
                 dataType: 'json',
                 success: (res) => {
@@ -98,11 +99,11 @@ $(document).ready(function () {
 
         });
 
-        $.get("http://167.71.214.79:5000/api/order", function (data) {
+        $.get(`${origin}/api/order`, function (data) {
             setActiveOrder(data);
         });
 
-        $.get("http://167.71.214.79:5000/api/vote", function (data) {
+        $.get(`${origin}/api/vote`, function (data) {
             if (data == null) {
                 $("#vote-yes").prop("checked", false);
                 $("#vote-no").prop("checked", false);
@@ -115,9 +116,9 @@ $(document).ready(function () {
             }
         });
 
-        $.get("http://167.71.214.79:5000/api/votes", function (data) {
+        $.get(`${origin}/api/votes`, function (data) {
             let yValues = []
-            let xValues = ["Alphabetical", "Frequency Only", "Preference Only", "Both"]
+            let xValues = ["Alphabetical", "Frequency Only", "Preference Only", "Frequency + Preference"]
             let barColors = [];
 
             data.forEach(function (value, index) {
@@ -149,7 +150,15 @@ $(document).ready(function () {
                 },
                 options: {
                     legend: {display: false},
-                    title: {display: false}
+                    title: {display: false},
+                    scales: {
+                        yAxes: [{
+                            display: true,
+                            ticks: {
+                                beginAtZero: true   // minimum value will be 0.
+                            }
+                        }]
+                    }
                 }
             });
         }
@@ -157,10 +166,10 @@ $(document).ready(function () {
         $.ajax({
             type: 'POST',
             contentType: 'application/json',
-            url: "http://167.71.214.79:5000/api/frequencies",
+            url: `${origin}/api/frequencies`,
             dataType: 'json',
             success: (frequencies) => {
-                $.get("http://167.71.214.79:5000/tiles", function (data) {
+                $.get(`${origin}/tiles`, function (data) {
                     let xValues = []
                     let yValues = []
                     let barColors = [];
@@ -182,10 +191,10 @@ $(document).ready(function () {
         $.ajax({
             type: 'POST',
             contentType: 'application/json',
-            url: "http://167.71.214.79:5000/api/preferences",
+            url: `${origin}/api/preferences`,
             dataType: 'json',
             success: (frequencies) => {
-                $.get("http://167.71.214.79:5000/tiles", function (data) {
+                $.get(`${origin}/tiles`, function (data) {
                     let xValues = []
                     let yValues = []
                     let barColors = [];
