@@ -10,4 +10,4 @@ RUN pip install -r /var/www/requirements.txt
 
 EXPOSE 80
 
-CMD ["flask", "run"]
+CMD ["python", "app.py"]
