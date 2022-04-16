@@ -4,32 +4,28 @@
 
     <div class="container pt-5">
         <div class="row align-items-center border border-success mt-3 mb-3 p-1">
-            <div class="col">
-                <span>Do you like this layout?</span>
+            <div class="col-md-2">
+                <button type="button" class="btn btn-success" style="width: 100%" id="voice-cmd-btn">Voice Command
+                </button>
             </div>
-            <div class="col">
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="vote" id="vote-yes" value="yes"/>
-                    <label class="form-check-label" for="vote-yes">Yes</label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="vote" id="vote-no" value="no"/>
-                    <label class="form-check-label" for="vote-no">No</label>
-                </div>
-            </div>
-            <div class="col">
-                <button type="button" class="btn btn-success" style="width: 100%" id="vote-btn">Vote</button>
-            </div>
-            <div class="col">
+            <div class="col-md-3">
                 <button type="button" class="btn btn-primary" style="width: 100%" data-bs-toggle="modal"
                         data-bs-target="#usagePreferenceModal">View Preference/Usage
                 </button>
             </div>
             <div class="col">
-                <button type="button" class="btn btn-warning" style="width: 100%" data-bs-toggle="modal"
-                        data-bs-target="#votesModal">View Votes
-                </button>
+                <div class="d-flex flex-row-reverse mt-3 mb-3">
+                    <div class="btn-group" role="group" aria-label="sort-by">
+                        <button type="button" class="btn btn-secondary" name="order-btn" value="0">Alphabetical</button>
+                        <button type="button" class="btn btn-secondary" name="order-btn" value="1">Frequency</button>
+                        <button type="button" class="btn btn-secondary" name="order-btn" value="2">Preference</button>
+                        <button type="button" class="btn btn-secondary" name="order-btn" value="3">Frequency +
+                            Preference
+                        </button>
+                    </div>
+                </div>
             </div>
+
         </div>
 
         <!-- Modal -->
@@ -56,36 +52,6 @@
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     </div>
                 </div>
-            </div>
-        </div>
-
-        <!-- Modal -->
-        <div class="modal fade" id="votesModal" tabindex="-1" role="dialog" aria-labelledby="votesModal"
-             aria-hidden="true">
-            <div class="modal-dialog modal-lg" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Votes</h5>
-                    </div>
-                    <div class="modal-body">
-                        <div class="container">
-                            <canvas id="votes-chart" style="width: 100%;"></canvas>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="d-flex flex-row-reverse mt-3 mb-3">
-            <div class="btn-group" role="group" aria-label="sort-by">
-                <button type="button" class="btn btn-secondary" name="order-btn" value="0">Alphabetical</button>
-                <button type="button" class="btn btn-secondary" name="order-btn" value="1">Frequency</button>
-                <button type="button" class="btn btn-secondary" name="order-btn" value="2">Preference</button>
-                <button type="button" class="btn btn-secondary" name="order-btn" value="3">Frequency + Preference
-                </button>
             </div>
         </div>
 

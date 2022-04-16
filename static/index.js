@@ -62,22 +62,6 @@ $(document).ready(function () {
             });
         }
 
-        function setVote(vote_value) {
-            $.ajax({
-                type: 'POST',
-                contentType: 'application/json',
-                url: `${origin}/api/vote`,
-                data: JSON.stringify({vote: vote_value}),
-                dataType: 'json',
-                success: (res) => {
-                    console.log(res);
-                },
-                error: (err) => {
-                    console.log(err);
-                }
-            });
-
-        }
 
         $(".tile-func").click(function (e) {
             $(".tile-func").css('background-color', '#2980b9')
@@ -103,40 +87,6 @@ $(document).ready(function () {
             setActiveOrder(data);
         });
 
-        $.get(`${origin}/api/vote`, function (data) {
-            if (data == null) {
-                $("#vote-yes").prop("checked", false);
-                $("#vote-no").prop("checked", false);
-            } else {
-                if (data) {
-                    $("#vote-yes").prop("checked", true);
-                } else {
-                    $("#vote-no").prop("checked", true);
-                }
-            }
-        });
-
-        $.get(`${origin}/api/votes`, function (data) {
-            let yValues = []
-            let xValues = ["Alphabetical", "Frequency Only", "Preference Only", "Frequency + Preference"]
-            let barColors = [];
-
-            data.forEach(function (value, index) {
-                yValues.push(value)
-                barColors.push("rgb(52, 152, 219)")
-            })
-
-            drawUsageChart(xValues, yValues, barColors, "votes-chart");
-
-        });
-
-        $("#vote-btn").click(function (e) {
-            if (!$("#vote-yes").is(":checked") && !$("#vote-no").is(":checked")) {
-                alert("Please select your vote before submission!")
-            } else {
-                setVote($("input[type='radio'][name='vote']:checked").val() === "yes")
-            }
-        });
 
         function drawUsageChart(xValues, yValues, barColors, chartId) {
             new Chart(chartId, {
