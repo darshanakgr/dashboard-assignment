@@ -16,7 +16,6 @@ bp = Blueprint('dashboard', __name__)
 def home():
     user = user_utils.load_user(user_id=session.get("user_id"))
     tiles_data = copy.deepcopy(Config.TILES)
-    print("user mode:", user.get_mode(), file=sys.stdout)
     if user.get_mode() == Config.ALPHABETICAL:
         tiles_data.sort(key=lambda x: x["id"])
     else:
