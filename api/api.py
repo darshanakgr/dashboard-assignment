@@ -1,5 +1,6 @@
 import copy
 
+from utils.distance_matching import match
 from flask import Blueprint, request, session, jsonify
 
 import utils.user as user_utils
@@ -72,3 +73,9 @@ def order():
             return jsonify(tiles_data)
         return "ERROR"
     return jsonify(user.get_mode())
+
+
+@bp.route('/voice', methods=["GET"])
+def voice():
+    return jsonify(match(query=request.args.get('query')))
+

@@ -35,7 +35,7 @@ $(document).ready(function () {
                             htmlLines += '<div class="row">'
                         }
 
-                        htmlLines += `<div class="col tile m-1 tile-func" data-id="${tile.id}">`
+                        htmlLines += `<div class="col tile m-1" data-id="${tile.id}">`
                         htmlLines += '<div class="row mt-lg-3">'
                         htmlLines += '<div class="col text-center">'
                         htmlLines += `<i class="${tile.icon}" style="font-size: ${iconSize}px;"></i>`

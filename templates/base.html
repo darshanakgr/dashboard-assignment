@@ -48,10 +48,6 @@
             <!-- Left links -->
 
             <div class="d-flex align-items-center">
-                <!-- <a class="btn btn-dark mx-3" href="/customize" role="button">
-                    <i class="bi bi-tools"></i>
-                    Customize
-                </a> -->
                 {% if g.user %}
                     <span class="nav-item">Hello {{ g.user['username'] }}!</span>
                     <a class="btn btn-primary mx-3" href="/auth/logout" role="button">
@@ -82,5 +78,6 @@
 <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
 <script src="{{ url_for('static', filename='index.js') }}"></script>
+<script src="{{ url_for('static', filename='voice-cmd.js') }}"></script>
 </body>
 </html>

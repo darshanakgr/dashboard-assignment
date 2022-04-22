@@ -90,7 +90,3 @@ def load_user(user_id):
             user = json.load(output_file)
             return dict_to_user(user)
     return None
-    # else:
-    #     user = create_user(user_id)
-    #     save_user(user)
-    #     return user
